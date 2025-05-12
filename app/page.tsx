@@ -1,103 +1,160 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { useRouter } from "next/navigation";
+
+import Image from 'next/image';
+import { BACKEND_URL } from './config';
+
+interface Project {
+    id: number;
+    title: string;
+    description: string;
+    testimonial: string;
+    videoUrl: string;
+    websiteUrl: string;
+    createdAt: string;
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
+    const [isHovering, setIsHovering] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const response = await axios.get(`${BACKEND_URL}/api/v1/portfolio`);
+                setProjects(response.data);
+            } catch (err) {
+                setError('Something is Up with the Server!. Please try again later.');
+                console.error('Error fetching projects:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProjects();
+    }, []);
+
+    return (
+        <div className="relative min-h-screen bg-mainBgColor overflow-hidden">
+            {/* Background effects */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.3 }}
+                    transition={{ duration: 1 }}
+                    className="absolute animate-pulse bottom-0 right-0 w-[300px] h-[300px] md:w-[600px] md:h-[600px] rounded-full bg-cyan-300/80 blur-[80px] md:blur-[150px]"
+                />
+
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1.2 }}
+                    transition={{ duration: 2, delay: 0.5 }}
+                    className="absolute animate-pulse top-0 left-0 w-[250px] h-[250px] md:w-[500px] md:h-[500px] rounded-full bg-blue-500/40 blur-[60px] md:blur-[120px]"
+                />
+
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 2.4 }}
+                    transition={{ duration: 2, delay: 1 }}
+                    className="absolute animate-pulse top-1/2 left-1/2 w-[200px] h-[200px] md:w-[400px] md:h-[400px] rounded-full bg-red-500/40 blur-[50px] md:blur-[100px] transform -translate-x-1/2 -translate-y-1/2"
+                />
+            </div>
+
+            <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+
+                <div className="flex items-center justify-center mt-10">
+                    <div onClick={() => router.push("/")} className="cursor-pointer">
+                        <Image src="/NuvanceLogo.png" alt="CompanyLogo" width={42} height={52} />
+                    </div>
+                    <div
+                        className="text-xl md:text-2xl cursor-pointer font-bold ml-3 text-black relative"
+                        onMouseEnter={() => setIsHovering(true)}
+                        onMouseLeave={() => setIsHovering(false)}
+                        onClick={() => router.push("/")}
+                    >
+                        Nuvance Technologies
+                        <span className={`absolute bottom-0 left-0 h-0.5 bg-black transition-all duration-300 ease-in-out ${isHovering ? 'w-full' : 'w-0'}`}></span>
+                    </div>
+                </div>
+
+                <div className="mt-20 text-center animate-bounce">
+                    <span className="bg-gradient-to-r text-2xl md:text-4xl font-extrabold from-black via-blue-600 to-slate-800 bg-clip-text text-transparent decoration-cyan-800 cursor-pointer hover:underline">
+                        Turning Ideas into Impact: Explore Our Innovative Creations
+                    </span>
+                </div>
+
+                {/* Loading State - Replace this with your Loader component */}
+                {loading && (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+                    </div>
+                )}
+
+                {/* Error State */}
+                {error && (
+                    <div className="text-center py-10 text-red-500 font-medium">
+                        {error}
+                    </div>
+                )}
+
+                {/* Projects List */}
+                <div className="py-10 space-y-20">
+                    {projects.map((project, index) => (
+                        <div
+                            key={project.id}
+                            className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-8 items-center`}
+                        >
+                            {/* Video - Left/Right Alternating */}
+                            <div className="w-full md:w-1/2">
+                                <video
+                                    controls
+                                    className="w-full rounded-lg shadow-xl"
+                                // poster={`${project.videoUrl}?thumbnail=1`}
+                                >
+                                    <source src={project.videoUrl} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+
+                            {/* Project Details - Right/Left Alternating */}
+                            <div className="w-full md:w-1/2 space-y-4">
+                                <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                                    {project.title}
+                                </h2>
+
+                                <p className="text-gray-600 font-bold">
+                                    {project.description}
+                                </p>
+
+                                <blockquote className="p-4 bg-gray-100 rounded-lg border-l-4 border-blue-500">
+                                    <p className="italic text-gray-700">&quot;{project.testimonial}&quot;</p>
+                                </blockquote>
+
+                                <div className="pt-4  flex justify-center md:justify-start">
+                                    <Link
+                                        href={project.websiteUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-block px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                                    >
+                                        Visit Project
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+    );
 }
