@@ -127,12 +127,12 @@ export default function Home() {
                             </div>
 
                             {/* Project Details - Right/Left Alternating */}
-                            <div className="w-full md:w-1/2 space-y-4">
-                                <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+                            <div className="w-full md:w-1/2 cursor-pointer space-y-4">
+                                <h2 className="text-2xl md:text-3xl text-center md:text-left font-bold text-gray-800">
                                     {project.title}
                                 </h2>
 
-                                <p className="text-gray-600 font-bold">
+                                <p className="text-gray-600 md:text-left text-center font-bold">
                                     {project.description}
                                 </p>
 
@@ -140,7 +140,7 @@ export default function Home() {
                                     <p className="italic text-gray-700">&quot;{project.testimonial}&quot;</p>
                                 </blockquote>
 
-                                <div className="pt-4  flex justify-center md:justify-start">
+                                <div className="pt-4 flex justify-center md:justify-start">
                                     <Link
                                         href={project.websiteUrl}
                                         target="_blank"

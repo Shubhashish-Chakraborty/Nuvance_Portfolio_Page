@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Nuvance Technologies Portfolio",
-  description: "",
+  description: "Nuvance Technologies Portfolio Page, Nuvance Tech, Nuvance Tech Projects",
 };
 
 export default function RootLayout({
